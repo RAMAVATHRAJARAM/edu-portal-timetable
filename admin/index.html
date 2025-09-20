@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Panel</title>
+
+  <!-- Firebase (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen">
+
+  <!-- LOGIN -->
+  <div id="loginDiv" class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-blue-600">Edu Admin</h1>
+        <p class="text-sm text-gray-500">Sign in to manage timetables, events & announcements</p>
+      </div>
+      <div class="space-y-4">
+        <input id="email" type="email" placeholder="Email" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-300 outline-none" />
+        <input id="password" type="password" placeholder="Password" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-300 outline-none" />
+        <button id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">Login</button>
+        <p id="loginError" class="text-red-500 text-sm text-center"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="adminDiv" class="hidden">
+    <nav class="bg-white shadow sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center gap-6">
+            <div class="text-xl font-bold text-blue-600">Edu Admin Panel</div>
+            <div class="hidden md:flex gap-3">
+              <a href="#sections" class="text-sm text-gray-700 hover:underline">Sections</a>
+              <a href="#timetable" class="text-sm text-gray-700 hover:underline">Timetable</a>
+              <a href="#events" class="text-sm text-gray-700 hover:underline">Events</a>
+              <a href="#announcements" class="text-sm text-gray-700 hover:underline">Announcements</a>
+            </div>
+          </div>
+          <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-8">
+
+      <!-- Sections -->
+      <section id="sections" class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Section Management</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <input id="newSection" class="border rounded p-2" placeholder="New Section e.g., A" />
+          <button id="addSectionBtn" class="bg-green-500 text-white rounded p-2 hover:bg-green-600">Add Section</button>
+          <div class="flex gap-2">
+            <select id="deleteSectionSelect" class="flex-1 border rounded p-2"></select>
+            <button id="deleteSectionBtn" class="bg-red-500 text-white rounded px-3 py-2 hover:bg-red-600">Delete</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Timetable -->
+      <section id="timetable" class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Timetable Management</h2>
+        <div class="flex flex-col md:flex-row gap-3 mb-3">
+          <select id="sectionSelect" class="border rounded p-2 w-full md:w-1/2"></select>
+          <select id="daySelect" class="border rounded p-2 w-full md:w-1/2">
+            <option value="">-- Select Day --</option>
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option>
+          </select>
+        </div>
+        <div id="subjectsContainer" class="space-y-2 mb-3"></div>
+        <div class="flex gap-2 mb-3">
+          <button id="addRow" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add Row</button>
+          <button id="saveBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Timetable</button>
+          <button id="deleteTimetableBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete Timetable</button>
+        </div>
+        <p id="message" class="text-center text-sm text-gray-600"></p>
+      </section>
+
+      <!-- Events -->
+      <section id="events" class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Event Management</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <input id="eventTitle" placeholder="Title" class="border rounded p-2 col-span-2" />
+          <input id="eventImageURL" placeholder="Image URL (optional)" class="border rounded p-2" />
+          <textarea id="eventDesc" placeholder="Description" class="border rounded p-2 md:col-span-3"></textarea>
+          <input id="eventStartDate" type="date" class="border rounded p-2" />
+          <input id="eventEndDate" type="date" class="border rounded p-2" />
+          <button id="addEventBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add Event</button>
+        </div>
+        <div id="eventsList" class="space-y-2"></div>
+      </section>
+
+      <!-- Announcements -->
+      <section id="announcements" class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Announcement Management</h2>
+        <div class="flex flex-col md:flex-row gap-3 mb-3">
+          <input id="announcementTitle" placeholder="Announcement Title" class="border rounded p-2 flex-1" />
+          <input id="announcementDesc" placeholder="Short Description" class="border rounded p-2 flex-1" />
+          <button id="addAnnouncementBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add</button>
+        </div>
+        <div id="announcementsList" class="space-y-2"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/sections.js"></script>
+  <script src="js/timetable.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/announcements.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+

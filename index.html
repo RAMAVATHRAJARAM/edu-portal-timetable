@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edu Portal - Timetable & Events</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans">
+
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow p-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="font-bold text-xl text-blue-700 dark:text-blue-300">Edu Portal</div>
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#timetable" class="hover:underline">Timetable</a>
+        <a href="#events" class="hover:underline">Events</a>
+        <a href="#announcements" class="hover:underline">Announcements</a>
+        <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">🌙</button>
+      </div>
+      <button id="menuToggle" class="md:hidden p-2 rounded bg-gray-200 dark:bg-gray-700">☰</button>
+    </div>
+    <div id="mobileMenu" class="hidden flex-col mt-2 md:hidden space-y-2">
+      <a href="#timetable" class="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">Timetable</a>
+      <a href="#events" class="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">Events</a>
+      <a href="#announcements" class="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">Announcements</a>
+      <button id="themeToggleMobile" class="p-2 rounded bg-gray-200 dark:bg-gray-700 w-fit">🌙</button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="p-4 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="col-span-1 space-y-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
+        <h2 class="font-bold text-lg mb-2">Current Date & Time</h2>
+        <div id="dateTime" class="font-mono text-lg"></div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="col-span-2 space-y-8">
+      <!-- TIMETABLE -->
+      <section id="timetable" class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-4 text-center text-blue-700 dark:text-blue-300">Timetable</h1>
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1">
+            <label for="section" class="block mb-1 font-medium">Select Section</label>
+            <select id="section" class="w-full border rounded p-2 bg-white dark:bg-gray-700 dark:text-gray-100">
+              <option value="">-- Choose Section --</option>
+            </select>
+          </div>
+          <div class="flex-1">
+            <label for="day" class="block mb-1 font-medium">Select Day</label>
+            <select id="day" class="w-full border rounded p-2 bg-white dark:bg-gray-700 dark:text-gray-100">
+              <option value="">-- Choose Day --</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Friday">Saturday</option>
+            </select>
+          </div>
+        </div>
+        <button id="viewBtn" class="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors">View Timetable</button>
+        <div id="timetableDiv" class="mt-6 overflow-x-auto"></div>
+      </section>
+
+      <!-- EVENTS -->
+      <section id="events" class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-4 text-center text-blue-700 dark:text-blue-300">Events</h1>
+        <div class="flex flex-col sm:flex-row gap-3 mb-4 flex-wrap justify-center">
+          <button id="filterActive" class="flex-1 sm:flex-none bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">Active</button>
+          <button id="filterExpired" class="flex-1 sm:flex-none bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">Expired</button>
+          <button id="filterAll" class="flex-1 sm:flex-none bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors">All</button>
+        </div>
+        <div id="eventsList" class="grid sm:grid-cols-2 gap-4"></div>
+      </section>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="col-span-1 space-y-6" id="announcements">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+        <h2 class="font-bold mb-3 text-center text-yellow-700 dark:text-yellow-400">Announcements</h2>
+        <div id="announcementsList" class="space-y-2 text-sm"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/timetable.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/announcements.js"></script>
+  <script src="js/datetime.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
